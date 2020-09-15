@@ -172,12 +172,13 @@ while read -r arg ; do
   [[ -n "${arg:-}" ]] && build_params+=("--build-arg" "${arg}")
 done <<< "$(plugin_read_list ARGS)"
 
-if [[ "${BUILDKITE_PLUGIN_DOCKER_COMPOSE_REQUIRE_PREBUILD:-}" =~ ^(true|on|1)$ ]] && [[ ! -f "$override_file" ]] ; then
+if [[ "$(plugin_read_config PREBUILD "true")" == "true" ]] ; then
+  if [[ "${BUILDKITE_PLUGIN_DOCKER_COMPOSE_REQUIRE_PREBUILD:-}" =~ ^(true|on|1)$ ]] && [[ ! -f "$override_file" ]] ; then
   echo "+++ 🚨 No pre-built image found from a previous 'build' step for this service and config file."
   echo "The step specified that it was required"
   exit 1
 
-elif [[ ! -f "$override_file" ]]; then
+  elif [[ ! -f "$override_file" ]]; then
   echo "~~~ :docker: Building Docker Compose Service: $run_service" >&2
   echo "⚠️ No pre-built image found from a previous 'build' step for this service and config file. Building image..."
 
@@ -188,6 +189,7 @@ elif [[ ! -f "$override_file" ]]; then
 
   # Sometimes docker-compose pull leaves unfinished ansi codes
   echo
+  fi
 fi
 
 if [[ "$(plugin_read_config SEPERATE_SERVICE_START "true")" == "true" ]] ; then

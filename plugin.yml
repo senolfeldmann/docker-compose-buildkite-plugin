@@ -74,6 +74,8 @@ configuration:
       type: boolean
     seperate-service-start:
       type: boolean
+    prebuild:
+      type: boolean
   oneOf:
     - required:
       - run
@@ -100,3 +102,4 @@ configuration:
     user: [ run ]
     propagate-uid-gid: [ run ]
     seperate-service-start: [ run ]
+    prebuild: [ run ]
